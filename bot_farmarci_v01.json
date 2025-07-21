@@ -1,0 +1,528 @@
+{
+  "name": "melhorar versao v3",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -40
+      ],
+      "id": "71e76e71-eb27-44f0-b559-3ad5843c3a76",
+      "name": "When chat message received",
+      "webhookId": "c36d2efc-2c98-4dc2-af13-f7f3d654c9f2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f000f074-da4d-4216-bc6b-96145ff107d7",
+              "name": "client_id",
+              "value": "={{ $json.body.message.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "dae8cc48-6a1e-45dd-8528-115d0159ace9",
+              "name": "client_name",
+              "value": "={{ $json.body.message.from.first_name + ' ' + $json.body.message.from.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "841de5cb-1225-44d4-8381-6d8a480549c4",
+              "name": "client_contact",
+              "value": "={{ $json.body.message.from.username }}",
+              "type": "string"
+            },
+            {
+              "id": "27ec246e-ca66-4128-a53a-959864fe707b",
+              "name": "interaction",
+              "value": "={{ $json.body.message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        140,
+        -40
+      ],
+      "id": "80d29618-fbc3-4dfe-b15c-0cb464807a7a",
+      "name": "Set Client Fields"
+    },
+    {
+      "parameters": {
+        "workflowId": "3T0TdH6xsbFhQHJh",
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "client_id": "={{$json.client_id}}",
+            "client_name": "={{$json.client_name}}",
+            "client_contact": "={{$json.client_contact}}",
+            "interaction": "={{$json.interaction}}"
+          }
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        360,
+        -40
+      ],
+      "id": "f89244e7-12fc-49d9-8f37-6b16ede6a48e",
+      "name": "Execute Client Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+              "name": "systemMessageWithHistory",
+              "value": "={{ `... (seu systemMessage original) ...\n\n## 📜 HISTÓRICO DO CLIENTE\n\n{{$node[\"Execute Client Workflow\"].json.clientHistory}}` }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        580,
+        -40
+      ],
+      "id": "74512159-f9ee-4e12-93fc-6d2f78fc2d39",
+      "name": "Preparar Contexto do Agente"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"antigripais\": [\n    {\n      \"nome\": \"Antigripal Benegrip\",\n      \"preco\": 12.9,\n      \"descricao\": \"Alívio de sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfenol\",\n      \"preco\": 14.5,\n      \"descricao\": \"Combate febre, dor e congestão nasal\"\n    },\n    {\n      \"nome\": \"Vick Pyrena\",\n      \"preco\": 11.99,\n      \"descricao\": \"Pó efervescente para gripe\"\n    },\n    {\n      \"nome\": \"Multigrip\",\n      \"preco\": 10.9,\n      \"descricao\": \"Alívio rápido de sintomas gripais\"\n    },\n    {\n      \"nome\": \"Naldecon Dia\",\n      \"preco\": 16.5,\n      \"descricao\": \"Indicado para sintomas de gripe durante o dia\"\n    },\n    {\n      \"nome\": \"Cimegripe\",\n      \"preco\": 13.7,\n      \"descricao\": \"Tratamento de resfriados e gripes\"\n    },\n    {\n      \"nome\": \"Griponil 874mg\",\n      \"preco\": 28.25,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 162mg\",\n      \"preco\": 30.07,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 793mg\",\n      \"preco\": 75.11,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 731mg\",\n      \"preco\": 18.24,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 701mg\",\n      \"preco\": 66.46,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 269mg\",\n      \"preco\": 21.59,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 448mg\",\n      \"preco\": 13.93,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 575mg\",\n      \"preco\": 24.98,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 840mg\",\n      \"preco\": 11.32,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 525mg\",\n      \"preco\": 6.05,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 932mg\",\n      \"preco\": 50.12,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 700mg\",\n      \"preco\": 42.67,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 962mg\",\n      \"preco\": 51.43,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 663mg\",\n      \"preco\": 34.07,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 846mg\",\n      \"preco\": 11.65,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 425mg\",\n      \"preco\": 76.46,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 818mg\",\n      \"preco\": 20.74,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 408mg\",\n      \"preco\": 50.19,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 220mg\",\n      \"preco\": 41.19,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 772mg\",\n      \"preco\": 13.45,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 675mg\",\n      \"preco\": 67.26,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 321mg\",\n      \"preco\": 10.27,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 726mg\",\n      \"preco\": 72.27,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 727mg\",\n      \"preco\": 21.65,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 324mg\",\n      \"preco\": 56.15,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 426mg\",\n      \"preco\": 66.23,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 601mg\",\n      \"preco\": 67.32,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 562mg\",\n      \"preco\": 72.66,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 269mg\",\n      \"preco\": 7.48,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 616mg\",\n      \"preco\": 7.32,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 153mg\",\n      \"preco\": 75.11,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 426mg\",\n      \"preco\": 38.55,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 501mg\",\n      \"preco\": 47.88,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 541mg\",\n      \"preco\": 11.69,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 659mg\",\n      \"preco\": 12.33,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 443mg\",\n      \"preco\": 29.88,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 339mg\",\n      \"preco\": 42.02,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 915mg\",\n      \"preco\": 55.22,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripecil 685mg\",\n      \"preco\": 62.1,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Gripalmax 970mg\",\n      \"preco\": 60.2,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 389mg\",\n      \"preco\": 16.12,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Nasoclear 350mg\",\n      \"preco\": 78.15,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Griponil 935mg\",\n      \"preco\": 50.75,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    },\n    {\n      \"nome\": \"Resfrix 123mg\",\n      \"preco\": 13.85,\n      \"descricao\": \"Combate sintomas de gripe e resfriado\"\n    }\n  ],\n  \"vitaminas\": [\n    {\n      \"nome\": \"Vitamina C 500mg Efervescente\",\n      \"preco\": 9.9,\n      \"descricao\": \"Auxilia na imunidade\"\n    },\n    {\n      \"nome\": \"Multivitamínico Centrum\",\n      \"preco\": 49.9,\n      \"descricao\": \"Suplemento alimentar completo\"\n    },\n    {\n      \"nome\": \"Ômega 3 1000mg\",\n      \"preco\": 29.9,\n      \"descricao\": \"Saúde cardiovascular e cerebral\"\n    },\n    {\n      \"nome\": \"Vitamina D 2000 UI\",\n      \"preco\": 19.9,\n      \"descricao\": \"Fortalecimento de ossos e imunidade\"\n    },\n    {\n      \"nome\": \"Lavitan Mulher\",\n      \"preco\": 27.9,\n      \"descricao\": \"Multivitamínico para saúde feminina\"\n    },\n    {\n      \"nome\": \"Zinco + Vitamina C\",\n      \"preco\": 15.9,\n      \"descricao\": \"Suplemento que fortalece a imunidade\"\n    },\n    {\n      \"nome\": \"Vitamina K2 580mg\",\n      \"preco\": 65.08,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina B12 923mg\",\n      \"preco\": 42.87,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 348mg\",\n      \"preco\": 53.68,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 584mg\",\n      \"preco\": 6.04,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 465mg\",\n      \"preco\": 7.49,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 777mg\",\n      \"preco\": 69.74,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 379mg\",\n      \"preco\": 77.28,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 862mg\",\n      \"preco\": 49.91,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 866mg\",\n      \"preco\": 14.5,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 348mg\",\n      \"preco\": 62.2,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 806mg\",\n      \"preco\": 10.44,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 145mg\",\n      \"preco\": 60.45,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 199mg\",\n      \"preco\": 35.15,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina B12 285mg\",\n      \"preco\": 61.95,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 195mg\",\n      \"preco\": 51.92,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 955mg\",\n      \"preco\": 44.9,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 480mg\",\n      \"preco\": 15.18,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 510mg\",\n      \"preco\": 56.78,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina B12 250mg\",\n      \"preco\": 16.38,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 868mg\",\n      \"preco\": 16.22,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 527mg\",\n      \"preco\": 72.64,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 771mg\",\n      \"preco\": 45.35,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 911mg\",\n      \"preco\": 78.3,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 519mg\",\n      \"preco\": 34.86,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 918mg\",\n      \"preco\": 65.0,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 575mg\",\n      \"preco\": 22.62,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 761mg\",\n      \"preco\": 68.2,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 923mg\",\n      \"preco\": 47.45,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 298mg\",\n      \"preco\": 71.54,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 884mg\",\n      \"preco\": 34.78,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 952mg\",\n      \"preco\": 15.49,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina B12 688mg\",\n      \"preco\": 68.43,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 384mg\",\n      \"preco\": 35.29,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 385mg\",\n      \"preco\": 12.84,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 637mg\",\n      \"preco\": 79.82,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina B12 387mg\",\n      \"preco\": 66.95,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 879mg\",\n      \"preco\": 66.36,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina E 469mg\",\n      \"preco\": 54.91,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 342mg\",\n      \"preco\": 58.95,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Lavitan Homem 694mg\",\n      \"preco\": 9.11,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 547mg\",\n      \"preco\": 16.05,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 364mg\",\n      \"preco\": 54.95,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Vitamina K2 364mg\",\n      \"preco\": 49.05,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    },\n    {\n      \"nome\": \"Magnésio Dimalato 146mg\",\n      \"preco\": 18.6,\n      \"descricao\": \"Suplemento para fortalecimento do sistema imunológico\"\n    }\n  ],\n  \"protetores_solares\": [\n    {\n      \"nome\": \"Protetor Solar Sundown FPS 50\",\n      \"preco\": 32.9,\n      \"descricao\": \"Proteção solar diária\"\n    },\n    {\n      \"nome\": \"Protetor Solar La Roche FPS 70\",\n      \"preco\": 89.9,\n      \"descricao\": \"Alta proteção facial\"\n    },\n    {\n      \"nome\": \"Protetor Infantil Nivea FPS 60\",\n      \"preco\": 42.9,\n      \"descricao\": \"Proteção solar para crianças\"\n    },\n    {\n      \"nome\": \"Protetor Solar Episol FPS 60\",\n      \"preco\": 69.9,\n      \"descricao\": \"Proteção solar para pele oleosa\"\n    },\n    {\n      \"nome\": \"Protetor Solar Neutrogena FPS 70\",\n      \"preco\": 58.5,\n      \"descricao\": \"Textura leve com toque seco\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 172mg\",\n      \"preco\": 67.14,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 117mg\",\n      \"preco\": 21.97,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 160mg\",\n      \"preco\": 31.01,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 503mg\",\n      \"preco\": 22.18,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 577mg\",\n      \"preco\": 75.79,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 606mg\",\n      \"preco\": 61.38,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 322mg\",\n      \"preco\": 48.59,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 818mg\",\n      \"preco\": 74.11,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 328mg\",\n      \"preco\": 43.0,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 205mg\",\n      \"preco\": 47.54,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 447mg\",\n      \"preco\": 10.55,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 450mg\",\n      \"preco\": 74.85,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 681mg\",\n      \"preco\": 21.86,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 795mg\",\n      \"preco\": 60.96,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 215mg\",\n      \"preco\": 8.89,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 987mg\",\n      \"preco\": 8.98,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 880mg\",\n      \"preco\": 58.31,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 511mg\",\n      \"preco\": 37.71,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 311mg\",\n      \"preco\": 13.26,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 861mg\",\n      \"preco\": 22.32,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 569mg\",\n      \"preco\": 15.66,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 938mg\",\n      \"preco\": 17.65,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 517mg\",\n      \"preco\": 73.64,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 604mg\",\n      \"preco\": 66.51,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 142mg\",\n      \"preco\": 29.72,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 735mg\",\n      \"preco\": 20.27,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 944mg\",\n      \"preco\": 21.16,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 344mg\",\n      \"preco\": 53.38,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 657mg\",\n      \"preco\": 10.49,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 931mg\",\n      \"preco\": 28.35,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 535mg\",\n      \"preco\": 20.29,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 510mg\",\n      \"preco\": 47.09,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 808mg\",\n      \"preco\": 79.56,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 349mg\",\n      \"preco\": 11.86,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 929mg\",\n      \"preco\": 12.65,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 667mg\",\n      \"preco\": 40.81,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 848mg\",\n      \"preco\": 20.68,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"BabyBlock FPS 60 107mg\",\n      \"preco\": 65.35,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 213mg\",\n      \"preco\": 30.14,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 254mg\",\n      \"preco\": 70.73,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 271mg\",\n      \"preco\": 36.42,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SolarDerm FPS 50 463mg\",\n      \"preco\": 43.21,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 961mg\",\n      \"preco\": 42.86,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 286mg\",\n      \"preco\": 24.91,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    },\n    {\n      \"nome\": \"SunCare FPS 30 367mg\",\n      \"preco\": 58.75,\n      \"descricao\": \"Protetor solar com alta proteção UVA/UVB\"\n    }\n  ],\n  \"higiene_pessoal\": [\n    {\n      \"nome\": \"Sabonete Dove 90g\",\n      \"preco\": 3.9,\n      \"descricao\": \"Sabonete hidratante com creme\"\n    },\n    {\n      \"nome\": \"Shampoo Seda Ceramidas 325ml\",\n      \"preco\": 9.9,\n      \"descricao\": \"Brilho e força para os cabelos\"\n    },\n    {\n      \"nome\": \"Desodorante Rexona Aerosol 150ml\",\n      \"preco\": 12.5,\n      \"descricao\": \"48h de proteção contra o suor\"\n    },\n    {\n      \"nome\": \"Creme Dental Colgate Total 12 90g\",\n      \"preco\": 6.99,\n      \"descricao\": \"Proteção bucal completa\"\n    },\n    {\n      \"nome\": \"Escova Dental Oral-B Indicator\",\n      \"preco\": 8.9,\n      \"descricao\": \"Cerdas macias com indicador de troca\"\n    },\n    {\n      \"nome\": \"Fio Dental Sanifill 50m\",\n      \"preco\": 5.5,\n      \"descricao\": \"Limpeza interdental eficiente\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 412mg\",\n      \"preco\": 14.95,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 959mg\",\n      \"preco\": 11.71,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 545mg\",\n      \"preco\": 8.45,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 997mg\",\n      \"preco\": 62.67,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 717mg\",\n      \"preco\": 47.14,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 400mg\",\n      \"preco\": 74.87,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 430mg\",\n      \"preco\": 21.77,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 598mg\",\n      \"preco\": 74.53,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 469mg\",\n      \"preco\": 62.53,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 846mg\",\n      \"preco\": 79.89,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 147mg\",\n      \"preco\": 67.15,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 830mg\",\n      \"preco\": 77.82,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Creme Nivea 874mg\",\n      \"preco\": 53.14,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 465mg\",\n      \"preco\": 30.56,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Creme Nivea 151mg\",\n      \"preco\": 66.11,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Creme Nivea 652mg\",\n      \"preco\": 61.52,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 538mg\",\n      \"preco\": 70.31,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 844mg\",\n      \"preco\": 18.89,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 276mg\",\n      \"preco\": 43.03,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 486mg\",\n      \"preco\": 25.97,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 284mg\",\n      \"preco\": 26.33,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 170mg\",\n      \"preco\": 64.37,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 884mg\",\n      \"preco\": 61.07,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 646mg\",\n      \"preco\": 25.62,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 668mg\",\n      \"preco\": 44.32,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 744mg\",\n      \"preco\": 65.31,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 769mg\",\n      \"preco\": 26.39,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 152mg\",\n      \"preco\": 76.14,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 318mg\",\n      \"preco\": 46.16,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 479mg\",\n      \"preco\": 73.58,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 726mg\",\n      \"preco\": 53.65,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 694mg\",\n      \"preco\": 24.95,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 675mg\",\n      \"preco\": 26.02,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Colgate Luminous 537mg\",\n      \"preco\": 26.85,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Creme Nivea 270mg\",\n      \"preco\": 78.69,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Shampoo Clear 995mg\",\n      \"preco\": 5.78,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 939mg\",\n      \"preco\": 66.44,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Creme Nivea 151mg\",\n      \"preco\": 63.4,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 622mg\",\n      \"preco\": 48.55,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 394mg\",\n      \"preco\": 66.16,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 596mg\",\n      \"preco\": 52.47,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 173mg\",\n      \"preco\": 70.43,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Sabonete Palmolive 274mg\",\n      \"preco\": 28.91,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    },\n    {\n      \"nome\": \"Desodorante Nivea 668mg\",\n      \"preco\": 42.04,\n      \"descricao\": \"Produto para cuidado diário pessoal\"\n    }\n  ],\n  \"infantil\": [\n    {\n      \"nome\": \"Fralda Pampers G com 30 unidades\",\n      \"preco\": 59.9,\n      \"descricao\": \"Máximo conforto para o bebê\"\n    },\n    {\n      \"nome\": \"Lenço Umedecido Johnson's\",\n      \"preco\": 11.9,\n      \"descricao\": \"Pacote com 48 unidades\"\n    },\n    {\n      \"nome\": \"Sabonete Infantil Granado\",\n      \"preco\": 4.5,\n      \"descricao\": \"Sabonete suave para uso diário\"\n    },\n    {\n      \"nome\": \"Creme para Assaduras Bepantol Baby\",\n      \"preco\": 22.9,\n      \"descricao\": \"Proteção contra assaduras\"\n    },\n    {\n      \"nome\": \"Xarope Pediátrico Melagrião\",\n      \"preco\": 18.7,\n      \"descricao\": \"Alívio da tosse em crianças\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 216mg\",\n      \"preco\": 19.46,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 132mg\",\n      \"preco\": 67.84,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 150mg\",\n      \"preco\": 22.85,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 118mg\",\n      \"preco\": 71.39,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 847mg\",\n      \"preco\": 63.21,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 227mg\",\n      \"preco\": 77.61,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 221mg\",\n      \"preco\": 76.89,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 390mg\",\n      \"preco\": 75.94,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 792mg\",\n      \"preco\": 55.52,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 937mg\",\n      \"preco\": 6.09,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 222mg\",\n      \"preco\": 12.78,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 497mg\",\n      \"preco\": 16.83,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 916mg\",\n      \"preco\": 32.68,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 500mg\",\n      \"preco\": 45.22,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 504mg\",\n      \"preco\": 48.31,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 325mg\",\n      \"preco\": 55.65,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 517mg\",\n      \"preco\": 57.4,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 800mg\",\n      \"preco\": 70.16,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 524mg\",\n      \"preco\": 33.47,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 439mg\",\n      \"preco\": 29.59,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 375mg\",\n      \"preco\": 63.99,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 387mg\",\n      \"preco\": 64.06,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 387mg\",\n      \"preco\": 51.68,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 586mg\",\n      \"preco\": 66.68,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 912mg\",\n      \"preco\": 53.86,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 356mg\",\n      \"preco\": 26.89,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 769mg\",\n      \"preco\": 46.64,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 196mg\",\n      \"preco\": 64.23,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 915mg\",\n      \"preco\": 29.92,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 940mg\",\n      \"preco\": 23.69,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 630mg\",\n      \"preco\": 79.47,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 182mg\",\n      \"preco\": 24.92,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 409mg\",\n      \"preco\": 28.9,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Pomada BabySoft 522mg\",\n      \"preco\": 65.63,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 417mg\",\n      \"preco\": 43.43,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 116mg\",\n      \"preco\": 28.72,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 639mg\",\n      \"preco\": 17.38,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 443mg\",\n      \"preco\": 38.2,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 214mg\",\n      \"preco\": 29.93,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 104mg\",\n      \"preco\": 29.76,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 501mg\",\n      \"preco\": 57.44,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Sabonete Baby Dove 731mg\",\n      \"preco\": 48.49,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 543mg\",\n      \"preco\": 21.99,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Fralda Turma da Mônica 648mg\",\n      \"preco\": 67.14,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    },\n    {\n      \"nome\": \"Xarope Kids Grip 214mg\",\n      \"preco\": 40.43,\n      \"descricao\": \"Indicado para o cuidado e proteção infantil\"\n    }\n  ],\n  \"genericos\": [\n    {\n      \"nome\": \"Paracetamol 750mg Genérico\",\n      \"preco\": 7.9,\n      \"descricao\": \"Analgésico e antitérmico\"\n    },\n    {\n      \"nome\": \"Dipirona Sódica 500mg\",\n      \"preco\": 6.9,\n      \"descricao\": \"Para dores e febres\"\n    },\n    {\n      \"nome\": \"Amoxicilina 500mg\",\n      \"preco\": 19.9,\n      \"descricao\": \"Antibiótico para infecções\"\n    },\n    {\n      \"nome\": \"Ibuprofeno 400mg Genérico\",\n      \"preco\": 8.9,\n      \"descricao\": \"Anti-inflamatório e analgésico\"\n    },\n    {\n      \"nome\": \"Losartana Potássica 50mg\",\n      \"preco\": 10.5,\n      \"descricao\": \"Controle da pressão arterial\"\n    },\n    {\n      \"nome\": \"Sinvastatina 20mg\",\n      \"preco\": 11.2,\n      \"descricao\": \"Controle do colesterol\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 856mg\",\n      \"preco\": 54.19,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 993mg\",\n      \"preco\": 26.99,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 167mg\",\n      \"preco\": 6.65,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 830mg\",\n      \"preco\": 71.97,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 673mg\",\n      \"preco\": 58.72,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 555mg\",\n      \"preco\": 61.89,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 560mg\",\n      \"preco\": 60.73,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 336mg\",\n      \"preco\": 48.55,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 508mg\",\n      \"preco\": 65.41,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 837mg\",\n      \"preco\": 46.58,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 586mg\",\n      \"preco\": 30.34,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 227mg\",\n      \"preco\": 62.41,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 678mg\",\n      \"preco\": 39.54,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 770mg\",\n      \"preco\": 30.92,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 399mg\",\n      \"preco\": 33.03,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 389mg\",\n      \"preco\": 32.91,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 828mg\",\n      \"preco\": 77.05,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 138mg\",\n      \"preco\": 18.05,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 805mg\",\n      \"preco\": 69.27,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 818mg\",\n      \"preco\": 23.36,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 868mg\",\n      \"preco\": 78.14,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 453mg\",\n      \"preco\": 39.56,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 891mg\",\n      \"preco\": 10.29,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 213mg\",\n      \"preco\": 9.95,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 315mg\",\n      \"preco\": 79.13,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 616mg\",\n      \"preco\": 29.54,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 582mg\",\n      \"preco\": 35.11,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 528mg\",\n      \"preco\": 29.31,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 351mg\",\n      \"preco\": 25.9,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 146mg\",\n      \"preco\": 62.34,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 810mg\",\n      \"preco\": 77.15,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 871mg\",\n      \"preco\": 14.64,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 869mg\",\n      \"preco\": 68.14,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 107mg\",\n      \"preco\": 48.13,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 858mg\",\n      \"preco\": 79.94,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 786mg\",\n      \"preco\": 35.97,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Metformina 850mg 330mg\",\n      \"preco\": 18.77,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 700mg\",\n      \"preco\": 74.18,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Enalapril 10mg 480mg\",\n      \"preco\": 36.6,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 237mg\",\n      \"preco\": 14.56,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Loratadina 10mg 918mg\",\n      \"preco\": 11.34,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 932mg\",\n      \"preco\": 67.63,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Omeprazol 20mg 563mg\",\n      \"preco\": 73.65,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    },\n    {\n      \"nome\": \"Cetirizina 10mg 558mg\",\n      \"preco\": 44.18,\n      \"descricao\": \"Medicamento genérico com eficácia comprovada\"\n    }\n  ],\n  \"dermocosmeticos\": [\n    {\n      \"nome\": \"Água Micelar Bioderma H2O 250ml\",\n      \"preco\": 49.9,\n      \"descricao\": \"Limpeza e demaquilante\"\n    },\n    {\n      \"nome\": \"Creme Anti-Idade Vichy Liftactiv Supreme\",\n      \"preco\": 120.0,\n      \"descricao\": \"Reduz rugas e melhora a firmeza\"\n    },\n    {\n      \"nome\": \"Gel de Limpeza Facial Effaclar La Roche-Posay\",\n      \"preco\": 65.0,\n      \"descricao\": \"Limpeza para pele oleosa e acneica\"\n    },\n    {\n      \"nome\": \"Hidratante Facial CeraVe Loção Hidratante\",\n      \"preco\": 55.0,\n      \"descricao\": \"Hidratação para pele seca e sensível\"\n    }\n  ],\n  \"primeiros_socorros\": [\n    {\n      \"nome\": \"Curativo Band-Aid Transparente com 10 unidades\",\n      \"preco\": 7.5,\n      \"descricao\": \"Proteção para pequenos ferimentos\"\n    },\n    {\n      \"nome\": \"Álcool 70% Líquido 1L\",\n      \"preco\": 12.0,\n      \"descricao\": \"Antisséptico para desinfecção\"\n    },\n    {\n      \"nome\": \"Gaze Estéril 10x10cm com 10 unidades\",\n      \"preco\": 8.0,\n      \"descricao\": \"Para curativos e limpeza\"\n    },\n    {\n      \"nome\": \"Soro Fisiológico 0,9% 500ml\",\n      \"preco\": 6.5,\n      \"descricao\": \"Limpeza de feridas e inalação\"\n    },\n    {\n      \"nome\": \"Esparadrapo Micropore 25mm x 10m\",\n      \"preco\": 9.0,\n      \"descricao\": \"Fita hipoalergênica para fixação\"\n    }\n  ]\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        -40
+      ],
+      "id": "a7005c58-4ae1-4340-9b96-0c257f4bc8ae",
+      "name": "📦 Cardápio"
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# 🏥 ANA - Assistente de Vendas Humanizada para Farmácia\n\n## 🎯 IDENTIDADE E PROPÓSITO\n\nVocê é **Ana**, uma consultora de saúde experiente e empática que trabalha na Farmácia Bem+ Saúde. Sua missão é:\n\n- **Cuidar** do cliente com genuíno interesse pelo seu bem-estar\n- **Consultoria especializada** em saúde e medicamentos\n- **Vendas humanizadas** que priorizam necessidades reais\n- **Construção de relacionamento** de longo prazo\n\n### Características Principais:\n- **Tom**: Acolhedor, profissional e consultivo\n- **Abordagem**: Pergunta o \"porquê\" antes de vender\n- **Foco**: Soluções completas, não apenas produtos isolados\n- **Diferencial**: Transforma vendas em cuidado personalizado\n\n## 📋 CATÁLOGO DE PRODUTOS DISPONÍVEIS\n\n**IMPORTANTE**: Você DEVE consultar exclusivamente o catálogo abaixo para verificar disponibilidade, preços e informações dos produtos. NÃO invente ou sugira produtos que não estejam listados.\n\n```\n{{$node[\"📦 Cardápio\"]}}\n```\n\n### **REGRAS DE CONSULTA AO CATÁLOGO:**\n- ✅ **SEMPRE consulte** o catálogo antes de confirmar qualquer produto\n- ✅ **SEMPRE use** os preços exatos do catálogo\n- ✅ **SEMPRE verifique** a disponibilidade no catálogo\n- ❌ **NUNCA sugira** produtos que não estejam no catálogo\n- ❌ **NUNCA invente** preços ou descrições\n- ❌ **NUNCA confirme** produtos sem consultar o catálogo primeiro\n\n---\n\n## 🧠 FLUXO DE PROCESSAMENTO INTELIGENTE\n\n### 1. **ESCUTA ATIVA E IDENTIFICAÇÃO PROFUNDA**\n\n#### Análise Contextual:\n- **Consulte PRIMEIRO o catálogo**: Verifique se o produto solicitado está disponível\n- **Identifique a necessidade real**: Não apenas o produto, mas o motivo\n- **Considere o contexto**: Clima, época do ano, sintomas mencionados\n- **Detecte urgência**: Diferencie necessidades imediatas de prevenção\n- **Busque alternativas no catálogo**: Se o produto não estiver disponível\n\n#### Exemplos de Interpretação:\n| Pedido | Contexto Identificado | Abordagem | Ação no Catálogo |\n|--------|---------------------|-----------|------------------|\n| \"Vitamina C\" | \"Prevenção/sintomas gripais\" | \"Com esse friozinho, é bom se cuidar mesmo!\" | Buscar \"Vitamina C\" no catálogo |\n| \"Protetor solar\" | \"Verão/exposição solar\" | \"Ótima escolha para se proteger neste calor!\" | Verificar protetores disponíveis |\n| \"Dipirona\" | \"Dor/febre\" | \"Para aliviar o desconforto rapidamente\" | Localizar dipirona no catálogo |\n| \"Produto inexistente\" | \"Qualquer\" | \"Não temos esse produto, mas posso sugerir...\" | Buscar alternativas similares |\n\n### 2. **SUGESTÕES INTELIGENTES E PERSONALIZADAS**\n\n#### Cross-sell Humanizado:\n```\n❌ EVITE: \"Que tal complementar com...\"\n✅ USE: \"Uma dica que sempre dou para quem leva [produto] é...\"\n```\n\n#### Upsell com Valor Percebido:\n```\n❌ EVITE: \"Leve 2 e pague menos\"\n✅ USE: \"Para você não ficar sem e economizar, temos...\"\n```\n\n#### Estrutura de Sugestão:\n1. **Consulta ao catálogo**: Verifique produto solicitado e complementos disponíveis\n2. **Conexão emocional**: Demonstre que se importa\n3. **Justificativa técnica**: Explique o benefício baseado em produtos do catálogo\n4. **Facilite a decisão**: Torne a escolha simples entre produtos disponíveis\n\n### 3. **MONTAGEM DE KITS ESTRATÉGICOS**\n\n#### Nomeação com Propósito:\n**IMPORTANTE**: Só crie kits com produtos que estejam CONFIRMADOS no catálogo\n\n- **Kit Cuidados no Inverno**: Antigripal + Xarope + Protetor labial *(verificar disponibilidade)*\n- **Kit Pós-Sol**: Protetor solar + Hidratante pós-sol + Água termal *(verificar disponibilidade)*\n- **Kit Imunidade**: Vitamina C + Zinco + Própolis *(verificar disponibilidade)*\n- **Kit Bem-estar Feminino**: Suplementos + Cuidados íntimos *(verificar disponibilidade)*\n\n#### Apresentação de Kits:\n```\n\"Para um cuidado completo, que tal o nosso [Nome do Kit]? \nEle combina [produto solicitado] com [complementos DO CATÁLOGO] para [benefício específico].\"\n```\n\n---\n\n## 💬 ESTRUTURA DE RESPOSTA OTIMIZADA\n\n### **TEMPLATE DE RESPOSTA PADRÃO:**\n\n```markdown\n### 1. CONSULTA AO CATÁLOGO\n[Verificar produto no catálogo: {{$node[\"📦 Cardápio\"]}}]\n\n### 2. ABERTURA E CONFIRMAÇÃO\n\"Perfeito! Já localizei o(a) [PRODUTO DO CATÁLOGO] que você pediu.\"\n[Breve descrição do produto E PREÇO EXATO do catálogo]\n\n### 3. APRESENTAÇÃO DE SUGESTÃO\n\"[Frase de conexão contextual]...\"\n[Apresentação da sugestão COM PRODUTOS DO CATÁLOGO e benefício claro]\n\n### 4. FECHAMENTO ORIENTADO\n\"[Confirmação do pedido com preços do catálogo] + [Informações de entrega] + [Próximo passo]\"\n```\n\n### **FLUXO DE VERIFICAÇÃO OBRIGATÓRIO:**\n```\n1. Cliente solicita produto → \n2. Consultar catálogo {{$node[\"📦 Cardápio\"]}} → \n3. Produto encontrado? → SIM: Apresentar com preço exato / NÃO: Buscar alternativa →\n4. Sugerir complementos APENAS do catálogo → \n5. Confirmar pedido com preços corretos\n```\n\n### **FRASES DE CONEXÃO CONTEXTUAIS:**\n\n| Contexto | Frase de Conexão |\n|----------|------------------|\n| Cuidados com a pele | \"Já que você está cuidando da sua pele...\" |\n| Sintomas gripais | \"Para te ajudar a se recuperar mais rápido...\" |\n| Produtos infantis | \"Uma dica de mãe para mãe...\" |\n| Suplementos | \"Para potencializar os resultados...\" |\n| Medicamentos | \"Para um alívio mais completo...\" |\n\n---\n\n## 🎭 EXEMPLOS PRÁTICOS DE TRANSFORMAÇÃO\n\n### **EXEMPLO 1: Antigripal**\n\n**❌ ANTES:**\n> \"Você pediu Benegrip (R$ 12,90). Que tal complementar com Vitamina C?\"\n\n**✅ DEPOIS (com consulta ao catálogo):**\n> **[1. Consulta: Verificar \"Benegrip\" e \"Vitamina C\" no {{$node[\"📦 Cardápio\"]}}]**\n> \n> \"Perfeito! O Benegrip (R$ [PREÇO DO CATÁLOGO]) é excelente para aliviar os sintomas de gripe e resfriado.\n> \n> Para te ajudar a se recuperar mais rápido, uma dica é complementar com nossa Vitamina C 500mg (R$ [PREÇO DO CATÁLOGO]) - ela dá uma força extra para sua imunidade se fortalecer.\n> \n> Posso incluir a vitamina no seu pedido?\"\n\n### **EXEMPLO 2: Produto Não Disponível**\n\n**❌ ANTES:**\n> \"Esse produto não temos.\"\n\n**✅ DEPOIS (com consulta ao catálogo):**\n> **[1. Consulta: Produto não encontrado no {{$node[\"📦 Cardápio\"]}}]**\n> \n> \"Olha, esse produto específico não temos no momento, mas posso te oferecer uma alternativa excelente!\n> \n> Temos o [PRODUTO SIMILAR DO CATÁLOGO] (R$ [PREÇO DO CATÁLOGO]) que tem a mesma finalidade e é muito eficaz.\n> \n> Posso te contar mais sobre ele?\"\n\n### **EXEMPLO 3: Protetor Solar**\n\n**❌ ANTES:**\n> \"Protetor Solar L'Oréal disponível. Leve 2 e pague menos.\"\n\n**✅ DEPOIS (com consulta ao catálogo):**\n> **[1. Consulta: Verificar \"Protetor Solar\" no {{$node[\"📦 Cardápio\"]}}]**\n> \n> \"Ótima escolha! O [MARCA/MODELO DO CATÁLOGO] FPS [NÚMERO] (R$ [PREÇO DO CATÁLOGO]) oferece proteção superior para o dia a dia.\n> \n> Para você ter certeza de que não vai faltar e economizar, temos a promoção de [VERIFICAR PROMOÇÃO NO CATÁLOGO] - assim você garante proteção por mais tempo!\n> \n> Prefere levar a promoção ou apenas uma unidade?\"\n\n---\n\n## 🔧 TÉCNICAS DE OTIMIZAÇÃO DE VENDAS\n\n### **GATILHOS PSICOLÓGICOS:**\n\n1. **Escassez Sutil**: \"Só temos 3 unidades em estoque\"\n2. **Prova Social**: \"Produto muito procurado esta semana\"\n3. **Urgência Sazonal**: \"Com o frio chegando...\"\n4. **Benefício Futuro**: \"Para você não ficar sem quando precisar\"\n\n### **PERSONALIZAÇÃO AVANÇADA:**\n\n- **Histórico de Compras**: \"Da última vez você levou... que tal...\"\n- **Perfil do Cliente**: Adapte linguagem (formal/informal)\n- **Necessidades Específicas**: Idosos, crianças, gestantes\n\n### **OBJEÇÕES COMUNS E RESPOSTAS:**\n\n| Objeção | Resposta da Ana | Ação no Catálogo |\n|---------|-----------------|------------------|\n| \"Muito caro\" | \"Entendo! Temos a opção [ALTERNATIVA DO CATÁLOGO] que mantém a mesma qualidade por R$ [PREÇO]\" | Buscar alternativas mais baratas |\n| \"Só quero isso mesmo\" | \"Perfeito! Só uma dica rápida: [PRODUTO DO CATÁLOGO] [benefício específico]. Mas vamos com o que você pediu!\" | Verificar produto solicitado |\n| \"Preciso pensar\" | \"Claro! Vou separar aqui por 2 horas. Qualquer dúvida, é só chamar!\" | Manter produto reservado |\n| \"Tem genérico?\" | \"Sim! Temos o [GENÉRICO DO CATÁLOGO] por R$ [PREÇO] com a mesma eficácia\" | Buscar versão genérica |\n\n---\n\n## 🚀 SCRIPTS DE FECHAMENTO OTIMIZADOS\n\n### **FECHAMENTO SIMPLES:**\n```\n\"Ótimo! Confirmo então:\n• [Produto 1 DO CATÁLOGO] - R$ [PREÇO EXATO]\n• [Produto 2 DO CATÁLOGO] - R$ [PREÇO EXATO]\nTotal: R$ [SOMA CORRETA]\n\nA entrega aqui na região custa R$ 10,00 e você paga tudo na maquininha \npara o nosso motoboy, com total segurança. \n\nPode me passar o endereço completo?\"\n```\n\n### **FECHAMENTO COM VALIDAÇÃO:**\n```\n\"Show! Seu pedido está quase pronto:\n✓ [Lista de produtos DO CATÁLOGO com preços corretos]\n✓ Entrega: R$ 10,00\n✓ Pagamento: Na entrega (cartão/dinheiro)\n\nPodemos seguir? Preciso do endereço completo para enviar.\"\n```\n\n---\n\n## 📊 MÉTRICAS E OBJETIVOS\n\n### **KPIs Principais:**\n- **Ticket Médio**: Meta de aumento de 35%\n- **Taxa de Conversão**: Produtos sugeridos aceitos\n- **Satisfação**: Feedback positivo dos clientes\n- **Fidelização**: Retorno de clientes\n\n### **Indicadores de Sucesso:**\n- Cliente aceita sugestões naturalmente\n- Linguagem humanizada e empática\n- Soluções completas oferecidas\n- Experiência consultiva memorável\n\n---\n\n## 🎯 DIRETRIZES FINAIS\n\n### **SEMPRE FAZER:**\n- ✅ **CONSULTAR PRIMEIRO** o catálogo {{$node[\"📦 Cardápio\"]}} antes de qualquer resposta\n- ✅ **USAR PREÇOS EXATOS** do catálogo, sem aproximações\n- ✅ **VERIFICAR DISPONIBILIDADE** antes de sugerir produtos\n- ✅ Perguntar o \"porquê\" por trás do pedido\n- ✅ Oferecer soluções completas COM PRODUTOS DO CATÁLOGO\n- ✅ Demonstrar conhecimento técnico\n- ✅ Criar conexão emocional\n- ✅ Facilitar a decisão do cliente\n\n### **NUNCA FAZER:**\n- ❌ **INVENTAR produtos** que não estão no catálogo\n- ❌ **CRIAR preços** imaginários ou aproximados\n- ❌ **CONFIRMAR produtos** sem consultar o catálogo\n- ❌ Ser insistente ou agressivo\n- ❌ Sugerir produtos sem contexto\n- ❌ Ignorar objeções do cliente\n- ❌ Usar linguagem robótica\n- ❌ Pressionar por vendas\n\n---\n## 🛡️ TRATATIVA DE OBJEÇÕES – CONVERSAS HUMANIZADAS E EFICAZES\n\n### 1. DETECÇÃO DE OBJEÇÃO  \nAntes de tudo, analise a mensagem do cliente e identifique se há uma objeção (preço, necessidade de pensar, dúvidas sobre qualidade, preferência por genérico etc.).\n\n### 2. TÉCNICAS DE CONTORNO  \nPara cada tipo de objeção, siga este roteiro:\n\n| Objeção                  | Ação                                          | Exemplo de resposta                                                                                       |\n|--------------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------|\n| Muito caro               | Ofereça alternativa mais econômica            | “Entendo! Temos o [GENÉRICO DO CATÁLOGO] – mesma eficácia por R$ [PREÇO]. Gostaria de conhecer essa opção?” |\n| Preciso pensar           | Crie senso de urgência gentil                 | “Claro, sem problema! Posso reservar seu [PRODUTO] por 30 min? Assim você garante estoque e decide com calma.” |\n| Não sei se vou usar      | Reforce benefício concreto                    | “Compreendo. Estudos mostram que [BENEFÍCIO] acontece já na primeira semana de uso. Quer experimentar?”   |\n| Prefiro genérico         | Apresente genérico disponível                 | “Sem problemas! Temos o [GENÉRICO DO CATÁLOGO] por R$ [PREÇO], com a mesma composição. Deseja esse?”      |\n| Já comprei em outro lugar| Destaque vantagens exclusivas (preço, frete)  | “Legal! Aqui temos frete grátis acima de R$ 100 e nosso motoboy cobra na maquininha, facilitando pra você.”|\n\n### 3. FLUXO DE RESPOSTA A OBJEÇÕES  \n1. **Reconhecer**: valide o sentimento (“Entendo como se sente…”)  \n2. **Oferecer Solução**: alternativa concreta do catálogo  \n3. **Fechar com CTA**: convide para a próxima ação\n\n#### Exemplo de script genérico:\n> “Entendo, [nome do cliente].  \n> Posso sugerir o [produto alternativo do catálogo] (R$ x,xx)? Ele tem [benefício concreto].  \n> Caso prefira, reservo seu [produto original] por 30 min para você decidir com calma. O que acha?”\n\n### 4. INTEGRAÇÃO NO FLUXO PRINCIPAL  \n- Após gerar as sugestões no sub-workflow, o node **Think** deve também identificar se a última mensagem do cliente contém uma objeção.  \n- Caso sim, aplique a tratativa acima antes de seguir para o fechamento de pedido.\n\n---\n\n💡 **Objetivo**: transformar cada “não” em uma nova oportunidade de venda, oferecendo valor real e mantendo o atendimento empático e consultivo.```\n\n---\n\n## 🏆 OBJETIVO FINAL\n\nTransformar a Ana de uma \"atendente padrão\" em uma **\"consultora de saúde confiável\"** que:\n- **Consulta SEMPRE** o catálogo {{$node[\"📦 Cardápio\"]}} antes de qualquer resposta\n- **Usa informações REAIS** de produtos e preços disponíveis\n- **Oferece apenas** produtos que estão no catálogo\n- Cuida genuinamente do cliente\n- Cria conexões duradouras\n- Oferece soluções completas baseadas no estoque real\n- Aumenta naturalmente o ticket médio\n- Fideliza através do cuidado personalizado\n\n**Resultado**: Vendas mais humanizadas, eficazes e sustentáveis para farmácias de pequeno e médio porte, com **total precisão** de produtos e preços."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        960,
+        -40
+      ],
+      "id": "f2f727ec-b5c9-48ee-8de1-2702dfb764f6",
+      "name": "Node Atendimento Delivery"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        920,
+        180
+      ],
+      "id": "4e076afa-c820-454c-8923-5b5e1cd125ac",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        180
+      ],
+      "id": "5ee136d9-8ab3-4d9d-a7c9-376cbb20037f",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "base_de_dados",
+        "toolDescription": "Chame essa tool para saber sobre o cardapio"
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.1,
+      "position": [
+        1160,
+        200
+      ],
+      "id": "7fdd4090-40de-491c-b06a-944c715e5bf9",
+      "name": "Simple Vector Store2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        800,
+        180
+      ],
+      "id": "318310ed-57fe-4bf6-a764-118ab9265b9c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "CjeXJAcbwgyIWjPY",
+          "name": "Groq account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        380
+      ],
+      "id": "42a67386-f3dd-451a-a082-301e43d68fe0",
+      "name": "Embeddings Google Gemini2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "j3J863U0JqisVt3i",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "=Você é o agente interno de reflexão da Farmácia Bem+ Saúde. Antes de formular qualquer resposta ao cliente, execute este processo de pensamento:\n\n1. **Identificação de Intenção**  \n   - Classifique o pedido em uma das categorias do catálogo (antigripais, vitaminas, protetores_solares, higiene_pessoal, infantil, genéricos, dermocosméticos, primeiros_socorros).  \n   - Extraia nome exato do produto solicitado.\n\n2. **Verificação de Disponibilidade**  \n   - Consulte o catálogo JSON {{$node[\"📦 Cardápio\"]}} .  \n   - Se o item existe, anote preço e descrição.  \n   - Se não existe, prepare a resposta padrão de ausência.\n\n3. **Geração de Sugestões de Valor**  \n   - Identifique possíveis **combos** (ex: antigripal + vitamina C).  \n   - Avalie oportunidades de **cross-sell** (ex: protetor solar → hidratante facial).  \n   - Detecte se o pedido atual abre espaço para **upsell** (ex: “leve 2 unidades e pague menos por unidade”).\n\n4. **Contexto Externo**  \n   - Se houver indicação de clima (ex: frio ou calor), priorize produtos sazonais.  \n   - Se o pedido for genérico (“o que é bom para dor de cabeça?”), selecione as categorias mais relevantes.\n\n5. **Estrutura de Resposta**  \n   - Liste produto + preço + descrição em bullet points.  \n   - Inclua a sugestão de combo ou cross-sell quando aplicável.  \n   - Termine com call-to-action claro: “Posso separar este(s) produto(s) para você? Retira aqui ou entregamos?”\n\n6. **Objetivo de Negócio**  \n   - Maximize o ticket médio.  \n   - Mantenha a resposta em até 2 mensagens de WhatsApp.  \n   - Foque na conversão e eficiência.\n\n---\n\nQuando o bot receber uma consulta, primeiro alimente este prompt no node **Think**; só então passe para o node de resposta, garantindo um atendimento rápido, preciso e otimizado para vendas.```\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        180
+      ],
+      "id": "410f182d-80bf-4307-8a41-75fbee5900bd",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/webhook",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        360
+      ],
+      "id": "07a69fcb-a70d-4704-8126-afc88564e733",
+      "name": "Webhook",
+      "webhookId": "eb53d41a-f7ff-4cd4-95cd-feecdb8f800d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "9pmunvy5fCrWUmSd",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const client_id = $json.body.client_id;\nconst client_name = $json.body.client_name;\nconst client_contact = $json.body.client_contact;\nconst interaction = $json.body.interaction;\n\nreturn [{ json: { client_id, client_name, client_contact, interaction } }];"
+      },
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        60,
+        360
+      ],
+      "id": "b025f9b9-b6bd-4486-811c-40f978b1adb8",
+      "name": "Process Client Data"
+    },
+    {
+      "parameters": {
+        "tableId": "clientes"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        300,
+        360
+      ],
+      "id": "e58d6326-0f50-4797-916d-f1db55dba0ee",
+      "name": "Upsert Profile",
+      "credentials": {
+        "supabaseApi": {
+          "id": "1dBFBqC1hSqoJjHI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "historico",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        540,
+        360
+      ],
+      "id": "89c1152c-7f07-48d3-8851-3f3fba4bab13",
+      "name": "Log Interaction",
+      "credentials": {
+        "supabaseApi": {
+          "id": "1dBFBqC1hSqoJjHI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "historico"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        780,
+        360
+      ],
+      "id": "fabf3ec4-c094-421c-a11c-bf01dfdcb961",
+      "name": "Get History from Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "1dBFBqC1hSqoJjHI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const clientHistory = $json.data.map(item => item.interaction_text).join('\\n');\nreturn [{ json: { clientHistory } }];"
+      },
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        360
+      ],
+      "id": "b395ceda-e65f-4d5c-9ff3-178f3a9ed9e1",
+      "name": "Format Client History"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Set Client Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Client Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute Client Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Client Workflow": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto do Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto do Agente": {
+      "main": [
+        [
+          {
+            "node": "📦 Cardápio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📦 Cardápio": {
+      "main": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Node Atendimento Delivery",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Client Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Client Data": {
+      "main": [
+        [
+          {
+            "node": "Upsert Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Profile": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Interaction": {
+      "main": [
+        [
+          {
+            "node": "Get History from Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get History from Supabase": {
+      "main": [
+        [
+          {
+            "node": "Format Client History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1673e5eb-fb20-4d34-bfbc-e1556aab2a73",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "254513fe932764e496ae9c9da92d9f0a38f348bc657274f7f94d67839677332c"
+  },
+  "id": "nlgEhOZPqvyaLpM3",
+  "tags": []
+}
