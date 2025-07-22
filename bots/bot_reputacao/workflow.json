@@ -1,0 +1,446 @@
+{
+  "name": "SaaS SEO e Gestão de Reputação Digital - atual",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2400,
+        2342
+      ],
+      "id": "5ee6278e-49cf-4d24-9343-004ba12c4246",
+      "name": "When chat message received",
+      "webhookId": "5e74b05f-a9a4-4917-9243-9ec0c4e35772"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.text;\n\n// Tenta localizar o início e fim do array JSON\nconst start = raw.indexOf('[\\n  {');\nconst end = raw.lastIndexOf('}\\n]');\n\nif (start === -1 || end === -1) {\n  throw new Error(\"Não foi possível localizar o bloco JSON no texto.\");\n}\n\n// Extrai trecho do JSON bruto\nconst jsonBlock = raw.slice(start, end + 3);\n\n// Tenta converter para objeto JS\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonBlock);\n} catch (err) {\n  throw new Error(\"Erro ao fazer parse do JSON: \" + err.message);\n}\n\n// Retorna no padrão de campos customizados\nreturn parsed.map(item => ({\n  json: {\n    text: \"new value\",\n    array: [item.nome, item.titulo, item.url, item.resumo],\n    object: {\n      innerKey1: \"new value\",\n      innerKey2: item.nome,\n      innerKey3: item.titulo,\n      innerKey4: item.url,\n      innerKey5: item.resumo\n    }\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1804,
+        2342
+      ],
+      "id": "c9714e66-d6b6-401e-aa7e-6e449f457933",
+      "name": "Code",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Como um Engenheiro Sênior de Inteligência Artificial, sua tarefa é realizar uma extração estruturada de links relevantes publicados nos últimos 6 meses sobre a seguinte entidade:\n\nNome da Pessoa ou Produto: [INSERIR AQUI]\n\nUse estratégias de busca em múltiplos mecanismos (Google, Bing, Yahoo, Yandex, DuckDuckGo), com foco em:\n\n1. Técnicas avançadas de operadores: \n   - site:, intitle:, inurl:, daterange:\n2. Filtragem por data de publicação (últimos 6 meses).\n3. Fontes confiáveis (portais jornalísticos, blogs especializados, canais oficiais).\n\n⛔ NÃO retorne explicações, introduções ou comentários.\n\n✅ Retorne apenas a seguinte estrutura JSON, com pelo menos 3 resultados, seguindo este modelo:\n\n```json\n[\n  {\n    \"site\": \"g1.globo.com\",\n    \"nome\": \"Bolsonaro\",\n    \"titulo\": \"Bolsonaro anuncia que não vai concorrer à reeleição em 2026\",\n    \"url\": \"https://g1.globo.com/politica/noticia/bolsonaro-anuncia-que-nao-vai-concorrer-a-reeleicao-em-2026.ghtml\",\n    \"resumo\": \"O presidente Jair Bolsonaro anunciou que não vai disputar um novo mandato em 2026, alegando foco em apoiar novos líderes.\"\n  },\n  {\n    \"site\": \"bbc.com\",\n    \"nome\": \"Bolsonaro\",\n    \"titulo\": \"BBC analisa legado de Bolsonaro\",\n    \"url\": \"https://www.bbc.com/news/bolsonaro-legado\",\n    \"resumo\": \"Análise completa do legado político e econômico de Jair Bolsonaro após o término de seu governo.\"\n  }\n]\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -2180,
+        2342
+      ],
+      "id": "7aaac756-5352-4beb-baa5-149d653c6435",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -2092,
+        2562
+      ],
+      "id": "376ec36a-ecfa-4ba4-82a6-1789abe98e15",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "CjeXJAcbwgyIWjPY",
+          "name": "Groq account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1276,
+        2562
+      ],
+      "id": "3fb9a162-346f-4392-b3b8-c2e13bc5d928",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "lyUw4dYjvaXMXpQn",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e0e9201-885a-43f7-ac15-0a3eaa626884",
+              "name": "Titulo",
+              "value": "={{ $json.object.innerKey3 }}",
+              "type": "string"
+            },
+            {
+              "id": "ddb64ef1-f8e4-48ea-a2f9-b2d6cb3f418e",
+              "name": "Link",
+              "value": "={{ $json.object.innerKey4 }}",
+              "type": "string"
+            },
+            {
+              "id": "666896c8-69a1-45d1-9a61-632b90653d06",
+              "name": "Texto",
+              "value": "={{ $json.object.innerKey5 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1584,
+        2342
+      ],
+      "id": "7633d72e-fcb6-49e8-889c-63641fa29aa6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Titulo }}{{ $json.Link }}{{ $json.Texto }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=🔮 Objetivo Principal:\n\nVocê é um especialista em copywriting para redes sociais com autoridade em transformar conceitos complexos de Inteligência Artificial em mensagens simples, claras, inspiradoras e altamente engajantes.\n✍️ Missão do Copywriter (IA ou humano):\n\nPara cada rede social, escreva o texto adaptado ao respectivo formato, com as seguintes diretrizes gerais:\n\n    Linguagem positiva, inspiradora, clara e humanizada\n\n    Estrutura que facilite a compreensão mesmo para leigos\n\n    Uso de analogias, metáforas leves ou comparações simples\n\n    Aplicação de técnicas de SEO quando apropriado (principalmente no blog)\n\n    Presença de CTAs personalizados para incentivar interação\n\n📱 Instagram\nEscreva um post com:\n\n    Abertura impactante (emojis ou frase-chamada para capturar atenção nos 125 primeiros caracteres)\n\n    Texto em blocos com espaçamento (facilita leitura no mobile)\n\n    Uso de emojis estratégicos para enfatizar emoções ou ações\n\n    Hashtags relevantes e específicas no final (máx. 15)\n\n    Call-to-action para comentários, salvamentos ou compartilhamento nos Stories\n\n🐦 X (Twitter)\nEscreva uma thread ou post com:\n\n    Mensagem direta, provocativa ou reflexiva nos primeiros 280 caracteres\n\n    Se for thread: cada tweet deve conter uma ideia completa, mantendo a continuidade\n\n    Evitar links externos no primeiro tweet (diminuem o alcance)\n\n    Uso moderado de hashtags (#IA, #Automação, etc.)\n\n    Estilo informal, sintético e com tom de conversa ou provocação\n\n    Se for um post único, finalize com uma pergunta para incentivar replies\n\n📘 Facebook\nEscreva um post com:\n\n    Narrativa curta ou história real/simulada (formato storytelling)\n\n    Linguagem mais explicativa e emocional\n\n    Espaçamento entre parágrafos\n\n    CTA direto no final (ex: “Comente o que você pensa sobre isso” / “Compartilhe com alguém que precisa ver isso”)\n\n    Pode conter emojis, mas com moderação\n\n    Inclua link externo se necessário (ex: blog, formulário ou vídeo)\n\n📝 Blog WordPress\nEscreva um conteúdo otimizado para blog com:\n\n    Título principal (H1) cativante e com palavra-chave principal\n\n    Subtítulos estruturados (H2, H3) para facilitar escaneabilidade\n\n    Parágrafos curtos e escaneáveis\n\n    Introdução com gancho emocional + definição do tema\n\n    Desenvolvimento com exemplos e analogias\n\n    Fechamento com resumo e CTA para comentário, compartilhamento ou download\n\n    Uso de palavras-chave estratégicas no texto, URL e subtítulos\n\n    Sugestão: no mínimo 500 palavras\n\n🎯 Regras adicionais para todos:\n\n    Se atentar para escrever todos os textos em português (Brasil)\n\n    Público-alvo: empreendedores, donos de pequenos negócios, criadores de conteúdo e pessoas curiosas sobre tecnologia e IA\n\n    Nunca assuma um tom acadêmico; prefira o tom de mentor amigável e motivador\n\n    Evite jargões técnicos. Se precisar usá-los, explique com exemplos simples\n\n    Não use textos genéricos — sempre crie mensagens com profundidade, relevância e autenticidade\n\n    Separe cada rede social por tags que serão usadas em um filtro no EditFields no proximo node"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -1364,
+        2342
+      ],
+      "id": "69371c81-8303-431e-8f5b-61e14e4feacf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v18.0/{page-id}/media",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{ $json.plataforma }}",
+        "queryParametersJson": "={{ $json.conteudo }}"
+      },
+      "id": "3e7ee824-5313-4599-bf1e-ddfb8d0b31a4",
+      "name": "Instagram Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -548,
+        2242
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth1",
+        "url": "https://api.twitter.com/2/tweets",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "722a1f44-b4d2-4890-a0ca-876cccc470a2",
+      "name": "Twitter Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -548,
+        2042
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "url": "https://graph.facebook.com/v18.0/{page-id}/feed",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "79e91850-44cd-493e-8226-e4e6d83be636",
+      "name": "Facebook Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -548,
+        2442
+      ]
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.conteudo.split('\\n')[0] }}",
+        "additionalFields": {}
+      },
+      "id": "d43791f5-cd12-48e0-b160-735cd0961cd4",
+      "name": "WordPress Post",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        -548,
+        2642
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!$json.output) {\n  throw new Error(\"Campo 'output' não encontrado. Verifique o node anterior.\");\n}\n\nconst texto = $json.output;\n\nconst instagram = texto.split(\"**Instagram:**\\n\\n\")[1]?.split(\"\\n\\n**Twitter:**\")[0]?.replace(/\\\"/g, '').trim() || '';\nconst twitter = texto.split(\"**Twitter:**\\n\\n\")[1]?.split(\"\\n\\n**Facebook:**\")[0]?.replace(/\\\"/g, '').trim() || '';\nconst facebook = texto.split(\"**Facebook:**\\n\\n\")[1]?.split(\"\\n\\n**Blog WordPress:**\")[0]?.replace(/\\\"/g, '').trim() || '';\nconst wordpress = texto.split(\"**Blog WordPress:**\\n\\n\")[1]?.trim() || '';\n\nreturn [\n  { json: { plataforma: 'Instagram', conteudo: instagram } },\n  { json: { plataforma: 'Twitter', conteudo: twitter } },\n  { json: { plataforma: 'Facebook', conteudo: facebook } },\n  { json: { plataforma: 'WordPress', conteudo: wordpress } }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -988,
+        2342
+      ],
+      "id": "daf4cba9-ffd6-41d2-b7d8-18c3fa1f3928",
+      "name": "Code_filter",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => item.json.plataforma === 'Instagram');\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        2242
+      ],
+      "id": "90c2c014-7f3a-4cf8-a370-89382bc4b593",
+      "name": "Code1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => item.json.plataforma === 'Twitter');\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        2042
+      ],
+      "id": "c3773d08-b0d9-4b80-a7a3-e01d97b1f5a1",
+      "name": "Code2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => item.json.plataforma === 'Facebook');\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        2442
+      ],
+      "id": "a33287cb-3f6e-4981-8127-385d974dc981",
+      "name": "Code3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => item.json.plataforma === 'WordPress');\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        2642
+      ],
+      "id": "8fb8f2a6-9e5a-4f1c-9c67-0ea17db7800d",
+      "name": "Code4",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code_filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code_filter": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Instagram Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Twitter Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Facebook Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "WordPress Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "jaRN9zOOFbTCLHOe"
+  },
+  "versionId": "f956f933-e68f-47ca-8b47-c516dbc21113",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "254513fe932764e496ae9c9da92d9f0a38f348bc657274f7f94d67839677332c"
+  },
+  "id": "jaRN9zOOFbTCLHOe",
+  "tags": []
+}
